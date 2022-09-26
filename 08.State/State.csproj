@@ -7,7 +7,7 @@
     <ProjectGuid>{FFA0CF3C-EF2F-4591-868A-64C13BE6940A}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>_08.State</RootNamespace>
-    <AssemblyName>08.State</AssemblyName>
+    <AssemblyName>State</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

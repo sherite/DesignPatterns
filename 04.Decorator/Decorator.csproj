@@ -7,7 +7,7 @@
     <ProjectGuid>{012CBB01-3163-41F9-8A35-8E975502DE3F}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>_04.Decorator</RootNamespace>
-    <AssemblyName>04.Decorator</AssemblyName>
+    <AssemblyName>Decorator</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

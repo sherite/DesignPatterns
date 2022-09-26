@@ -7,7 +7,7 @@
     <ProjectGuid>{35248DD3-B6E4-4D33-BFAC-856BB95F6997}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>_07.Proxy</RootNamespace>
-    <AssemblyName>07.Proxy</AssemblyName>
+    <AssemblyName>Proxy</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

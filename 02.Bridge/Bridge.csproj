@@ -7,7 +7,7 @@
     <ProjectGuid>{14734FCC-15C8-430E-991B-5EA3C9FE9722}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>_02.Bridge</RootNamespace>
-    <AssemblyName>02.Bridge</AssemblyName>
+    <AssemblyName>Bridge</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

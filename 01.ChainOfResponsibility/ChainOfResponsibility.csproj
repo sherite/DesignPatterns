@@ -7,7 +7,7 @@
     <ProjectGuid>{78451B1C-821D-4657-82B6-959858C32544}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>_01.ChainOfResponsibility</RootNamespace>
-    <AssemblyName>01.ChainOfResponsibility</AssemblyName>
+    <AssemblyName>ChainOfResponsibility</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

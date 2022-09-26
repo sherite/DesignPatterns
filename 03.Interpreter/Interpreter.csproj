@@ -7,7 +7,7 @@
     <ProjectGuid>{372EFEF1-D8FA-48F5-A76F-AABF0EACD72E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>_03.Interpreter</RootNamespace>
-    <AssemblyName>03.Interpreter</AssemblyName>
+    <AssemblyName>Interpreter</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

@@ -7,7 +7,7 @@
     <ProjectGuid>{F6B617CB-A69B-4AF8-B6B4-A04AB77C70BF}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>_06.Memento</RootNamespace>
-    <AssemblyName>06.Memento</AssemblyName>
+    <AssemblyName>Memento</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

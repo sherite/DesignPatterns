@@ -7,7 +7,7 @@
     <ProjectGuid>{A2E82B1F-A3DB-4F9F-872E-800B6376F8E2}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>_06.FlyWeight</RootNamespace>
-    <AssemblyName>06.FlyWeight</AssemblyName>
+    <AssemblyName>FlyWeight</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

@@ -7,7 +7,7 @@
     <ProjectGuid>{65FAC440-0AF9-4221-A5F9-466B4212D107}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>_07.Observer</RootNamespace>
-    <AssemblyName>07.Observer</AssemblyName>
+    <AssemblyName>Observer</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

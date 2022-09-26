@@ -7,7 +7,7 @@
     <ProjectGuid>{57043432-278F-4B85-AB71-4973E19DAAF4}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>DesignPatterns.AbstractFactory</RootNamespace>
-    <AssemblyName>01.AbstractFactory</AssemblyName>
+    <AssemblyName>AbstractFactory</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

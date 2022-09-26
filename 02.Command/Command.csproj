@@ -7,7 +7,7 @@
     <ProjectGuid>{4E7A90F4-E02F-4E80-B47A-5A47900D6891}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>_02.Command</RootNamespace>
-    <AssemblyName>02.Command</AssemblyName>
+    <AssemblyName>Command</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

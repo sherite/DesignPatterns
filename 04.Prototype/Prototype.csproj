@@ -7,7 +7,7 @@
     <ProjectGuid>{9E80BE20-1121-443E-A8D8-D1FBE8D989B6}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>DesignPatterns.Prototype</RootNamespace>
-    <AssemblyName>04.Prototype</AssemblyName>
+    <AssemblyName>Prototype</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

@@ -7,7 +7,7 @@
     <ProjectGuid>{A88CA2D4-E938-4596-A7B7-3E7B61CD5361}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>DesignPatterns.FactoryMethod</RootNamespace>
-    <AssemblyName>03.FactoryMethod</AssemblyName>
+    <AssemblyName>FactoryMethod</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

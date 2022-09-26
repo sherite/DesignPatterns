@@ -7,7 +7,7 @@
     <ProjectGuid>{DCD9FC78-EEF5-4E99-9FE5-729B8E18F140}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>DesignPatterns.Builder</RootNamespace>
-    <AssemblyName>02.Builder</AssemblyName>
+    <AssemblyName>Builder</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

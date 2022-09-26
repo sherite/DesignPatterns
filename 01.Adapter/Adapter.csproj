@@ -7,7 +7,7 @@
     <ProjectGuid>{1AB0B056-D425-47EA-BA62-97A32B40CA37}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>_01.Adapter</RootNamespace>
-    <AssemblyName>01.Adapter</AssemblyName>
+    <AssemblyName>Adapter</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

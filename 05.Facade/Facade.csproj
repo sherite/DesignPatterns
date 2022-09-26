@@ -7,7 +7,7 @@
     <ProjectGuid>{76CC5A7F-4136-4D46-A335-F3319DBAB400}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>_05.Facade</RootNamespace>
-    <AssemblyName>05.Facade</AssemblyName>
+    <AssemblyName>Facade</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
