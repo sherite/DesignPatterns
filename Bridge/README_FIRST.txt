@@ -1,221 +1,225 @@
-﻿ABSTRACT FACTORY - CREATIONAL DESIGN PATTERN
+﻿BRIDGE - STRUCTURAL DESIGN PATTERN
 
 INTENT
 
-Provide an interface for creating families of related or dependent objects without
-specifying their concrete classes.
+Decouple an abstraction from its implementation so that the two can vary 
+independently. 
 
 
 ALSO KNOWN AS
-Kit
+Handle/Body
 
 MOTIVATION
 
-Consider a user interface toolkit that supports multiple look-and-feel standards,
-such as Motif and Presentation Manager. Different look-and-feels define different
-appearances and behaviors for user interface "widgets" like scroll bars, windows,
-and buttons. To be portable across look-and-feel standards, an application should
-not hard-code its widgets for a particular look and feel. Instantiating
-look-and-feel-specific classes of widgets throughout the application makes it
-hard to change the look and feel later.
-We can solve this problem by defining an abstract WidgetFactory class that declares
-an interface for creating each basic kind of widget. There's also an abstract
-class for each kind of widget, and concrete subclasses implement widgets for
-specific look-and-feel standards. WidgetFactory's interface has an operation that
-returns a new widget object for each abstract widget class. Clients call these
-operations to obtain widget instances, but clients aren't aware of the concrete
-classes they're using. Thus clients stay independent of the prevailing look and
-feel.
+When an abstraction can have one of several possible implementations, the usual 
+way to accommodate them is to use inheritance. An abstract class defines the 
+interface to the abstraction, and concrete subclasses implement it in different 
+ways. But this approach isn't always flexible enough. Inheritance binds an 
+implementation to the abstraction permanently, which makes it difficult to modify, 
+extend, and reuse abstractions and implementations independently. 
+Consider the implementation of a portable Window abstraction in a user interface 
+toolkit. This abstraction should enable us to write applications that work on 
+both the X Window System and IBM's Presentation Manager (PM), for example. Using 
+inheritance, we could define an abstract class Window and subclasses XWindow and 
+PMWindow that implement the Window interface for the different platforms. But 
+this approach has two drawbacks: 
 
-There is a concrete subclass of WidgetFactory for each look-and-feel standard.
-Each subclass implements the operations to create the appropriate widget for the
-look and feel. For example, the CreateScrollBar operation on the
-MotifWidgetFactory instantiates and returns a Motif scroll bar, while the
-corresponding operation on the PMWidgetFactory returns a scroll bar for
-Presentation Manager. Clients create widgets solely through the WidgetFactory
-interface and have no knowledge of the classes that implement widgets for a
-particular look and feel. In other words, clients only have to commit to an interface
-defined by an abstract class, not a particular concrete class.
-A WidgetFactory also enforces dependencies between the concrete widget classes.
-A Motif scroll bar should be used with a Motif button and a Motif text editor,
-and that constraint is enforced automatically as a consequence of using a
-MotifWidgetFactory.
+1. It's inconvenient to extend the Window abstraction to cover different kinds 
+of windows or new platforms. Imagine an IconWindow subclass of Window that 
+specializes the Window abstraction for icons. To support IconWindows for 
+both platforms, we have to implement two new classes, XIconWindow and 
+PMIconWindow. Worse, we'll have to define two classes for every kind of 
+window. Supporting a third platform requires yet another new Window subclass 
+for every kind of window.
+
+2. It makes client code platform-dependent. Whenever a client creates a window, 
+it instantiates a concrete class that has a specific implementation. For 
+example, creating an XWindow object binds the Window abstraction to the 
+X Window implementation, which makes the client code dependent on the X 
+Window implementation. This, in turn, makes it harder to port the client 
+code to other platforms. 
+Clients should be able to create a window without committing to a concrete 
+implementation. Only the window implementation should depend on the 
+platform on which the application runs. Therefore client code should 
+instantiate windows without mentioning specific platforms. 
+The Bridge pattern addresses these problems by putting the Window abstraction 
+and its implementation in separate class hierarchies. There is one class hierarchy 
+for window interfaces (Window, IconWindow, TransientWindow) and a separate 
+hierarchy for platform-specific window implementations, with WindowImp as its 
+root. The XWindowImp subclass, for example, provides an implementation based on 
+the X Window System.
+
+All operations on Window subclasses are implemented in terms of abstract operations 
+from the WindowImp interface. This decouples the window abstractions from the 
+various platform-specific implementations. We refer to the relationship between 
+Window and WindowImp as a bridge, because it bridges the abstraction and its 
+implementation, letting them vary independently. 
 
 APPLICABILITY
 
-Use the Abstract Factory pattern when
-· a system should be independent of how its products are created, composed,
-and represented.
-· a system should be configured with one of multiple families of products.
-· a family of related product objects is designed to be used together, and
-you need to enforce this constraint.
-· you want to provide a class library of products, and you want to reveal
-just their interfaces, not their implementations.
+Use the Bridge pattern when 
+· you want to avoid a permanent binding between an abstraction and its 
+implementation. This might be the case, for example, when the implementation 
+must be selected or switched at run-time. 
+· both the abstractions and their implementations should be extensible by 
+subclassing. In this case, the Bridge pattern lets you combine the different 
+abstractions and implementations and extend them independently. 
+· changes in the implementation of an abstraction should have no impact on 
+clients; that is, their code should not have to be recompiled. 
+· (C++) you want to hide the implementation of an abstraction completely from 
+clients. In C++ the representation of a class is visible in the class 
+interface. 
+· you have a proliferation of classes as shown earlier in the first Motivation 
+diagram. Such a class hierarchy indicates the need for splitting an object
+into two parts. Rumbaugh uses the term "nested generalizations" [RBP+91] 
+to refer to such class hierarchies. 
+· you want to share an implementation among multiple objects (perhaps using 
+reference counting), and this fact should be hidden from the client. A simple 
+example is Coplien's String class [Cop92], in which multiple objects can 
+share the same string representation (StringRep).
 
 STRUCTURE
 
 PARTICPANTS
 
-· AbstractFactory (WidgetFactory)
-o declares an interface for operations that create abstract product objects.
+· Abstraction (Window) 
+o defines the abstraction's interface. 
+o maintains a reference to an object of type Implementor. 
 
-· ConcreteFactory (MotifWidgetFactory, PMWidgetFactory)
-o implements the operations to create concrete product objects.
+· RefinedAbstraction (IconWindow) 
+o Extends the interface defined by Abstraction. 
 
-· AbstractProduct (Window, ScrollBar)
-o declares an interface for a type of product object.
+· Implementor (WindowImp) 
+o defines the interface for implementation classes. This interface 
+doesn't have to correspond exactly to Abstraction's interface; in 
+fact the two interfaces can be quite different. Typically the 
+Implementor interface provides only primitive operations, and 
+Abstraction defines higher-level operations based on these 
+primitives. 
 
-· ConcreteProduct (MotifWindow, MotifScrollBar)
-o defines a product object to be created by the corresponding concrete factory.
-o implements the AbstractProduct interface.
-
-· Client
-o uses only interfaces declared by AbstractFactory and AbstractProduct classes.
+· ConcreteImplementor (XWindowImp, PMWindowImp) 
+o implements the Implementor interface and defines its concrete 
+implementation.
 
 COLLABORATIONS
 
-· Normally a single instance of a ConcreteFactory class is created at run-time.
-This concrete factory creates product objects having a particular
-implementation. To create different product objects, clients should use
-a different concrete factory.
-· AbstractFactory defers creation of product objects to its ConcreteFactory
-subclass.
-Design Patterns: Elements of Reusable Object-Oriented Software
-102
+· Abstraction forwards client requests to its Implementor object.
 
 CONSEQUENCES
 
-The Abstract Factory pattern has the following benefits and liabilities:
+The Bridge pattern has the following consequences: 
 
-1. It isolates concrete classes. The Abstract Factory pattern helps you control
-the classes of objects that an application creates. Because a factory
-encapsulates the responsibility and the process of creating product objects,
-it isolates clients from implementation classes. Clients manipulate
-instances through their abstract interfaces. Product class names are
-isolated in the implementation of the concrete factory; they do not appear
-in client code.
+1. Decoupling interface and implementation. An implementation is not bound 
+permanently to an interface. The implementation of an abstraction can be 
+configured at run-time. It's even possible for an object to change its 
+implementation at run-time. 
+Decoupling Abstraction and Implementor also eliminates compile-time 
+dependencies on the implementation. Changing an implementation class 
+doesn't require recompiling the Abstraction class and its clients. This 
+property is essential when you must ensure binary compatibility between 
+different versions of a class library. 
+Furthermore, this decoupling encourages layering that can lead to a 
+better-structured system. The high-level part of a system only has to know 
+about Abstraction and Implementor. 
 
-2. It makes exchanging product families easy. The class of a concrete factory
-appears only once in an application—that is, where it's instantiated. This
-makes it easy to change the concrete factory an application uses. It can
-use different product configurations simply by changing the concrete
-factory. Because an abstract factory creates a complete family of products,
-the whole product family changes at once. In our user interface example,
-we can switch from Motif widgets to Presentation Manager widgets simply
-by switching the corresponding factory objects and recreating the
-interface.
+2. Improved extensibility. You can extend the Abstraction and Implementor 
+hierarchies independently. 
 
-3. It promotes consistency among products. When product objects in a family
-are designed to work together, it's important that an application use
-objects from only one family at a time. AbstractFactory makes this easy
-to enforce.
-
-4. Supporting new kinds of products is difficult. Extending abstract factories
-to produce new kinds of Products isn't easy. That's because the
-AbstractFactory interface fixes the set of products that can be created.
-Supporting new kinds of products requires extending the factory interface,
-which involves changing the AbstractFactory class and all of its subclasses.
-We discuss one solution to this problem in the Implementation section.
+3. Hiding implementation details from clients. You can shield clients from 
+implementation details, like the sharing of implementor objects and the 
+accompanying reference count mechanism (if any).
 
 IMPLEMENTATION
+Consider the following implementation issues when applying the Bridge pattern: 
+1. Only one Implementor. In situations where there's only one implementation, 
+creating an abstract Implementor class isn't necessary. This is a degenerate 
+case of the Bridge pattern; there's a one-to-one relationship between 
+Abstraction and Implementor. Nevertheless, this separation is still useful 
+when a change in the implementation of a class must not affect its existing 
+clients—that is, they shouldn't have to be recompiled, just relinked. 
+Carolan [Car89] uses the term "Cheshire Cat" to describe this separation. 
+In C++, the class interface of the Implementor class can be defined in a 
+private header file that isn't provided to clients. This lets you hide an 
+implementation of a class completely from its clients. 
 
-Here are some useful techniques for implementing the Abstract Factory pattern.
+2. Creating the right Implementor object. How, when, and where do you decide 
+which Implementor class to instantiate when there's more than one? 
+If Abstraction knows about all ConcreteImplementor classes, then it can 
+instantiate one of them in its constructor; it can decide between them based 
+on parameters passed to its constructor. If, for example, a collection class 
+supports multiple implementations, the decision can be based on the size 
+of the collection. A linked list implementation can be used for small 
+collections and a hash table for larger ones. 
+Another approach is to choose a default implementation initially and change 
+it later according to usage. For example, if the collection grows bigger 
+than a certain threshold, then it switches its implementation to one that's 
+more appropriate for a large number of items. 
+It's also possible to delegate the decision to another object altogether. 
+In the Window/WindowImp example, we can introduce a factory object (see 
+Abstract Factory (99)) whose sole duty is to encapsulate platform-specifics. 
+The factory knows what kind of WindowImp object to create for the platform 
+in use; a Window simply asks it for a WindowImp, and it returns the right 
+kind. A benefit of this approach is that Abstraction is not coupled directly 
+to any of the Implementor classes. 
 
-1. Factories as singletons. 
-An application typically needs only one instance of a ConcreteFactory 
-per product family. So it's usually best implemented as a Singleton.
+3. Sharing implementors. Coplien illustrates how the Handle/Body idiom in C++ 
+can be used to share implementations among several objects [Cop92]. The 
+Body stores a reference count that the Handle class increments and 
+decrements.
 
-2. Creating the products. 
-AbstractFactory only declares an interface for creating products. 
-It's up to ConcreteProduct subclasses to actually create them. 
-The most common way to do this is to define a factory method for each product. 
-A concrete factory will specify its products by overriding the factory method
-for each. While this implementation is simple, it requires a new concrete 
-factory subclass for each product family, even if the product families differ
-only slightly.
-If many product families are possible, the concrete factory can be
-implemented using the Prototype pattern. The concrete factory is
-initialized with a prototypical instance of each product in the family,
-and it creates a new product by cloning its prototype. The Prototype-based
-approach eliminates the need for a new concrete factory class for each new
-product family.
-Here's a way to implement a Prototype-based factory in Smalltalk. The
-concrete factory stores the prototypes to be cloned in a dictionary called
-partCatalog. The method make: retrieves the prototype and clones it:
-make: partName
-^ (partCatalog at: partName) copy
-The concrete factory has a method for adding parts to the catalog.
-addPart: partTemplate named: partName
-partCatalog at: partName put: partTemplate
-Prototypes are added to the factory by identifying them with a symbol:
-aFactory addPart: aPrototype named: #ACMEWidget
-A variation on the Prototype-based approach is possible in languages that
-treat classes as first-class objects (Smalltalk and Objective C, for
-example). You can think of a class in these languages as a degenerate factory
-that creates only one kind of product. You can store classes inside a
-concrete factory that create the various concrete products in variables,
-much like prototypes. These classes create new instances on behalf of the
-concrete factory. You define a new factory by initializing an instance of
-a concrete factory with classes of products rather than by subclassing.
-This approach takes advantage of language characteristics, whereas the pure
-Prototype-based approach is language-independent.
-Like the Prototype-based factory in Smalltalk just discussed, the
-class-based version will have a single instance variable partCatalog, which
-is a dictionary whose key is the name of the part. Instead of storing
-prototypes to be cloned, partCatalog stores the classes of the products.
-The method make: now looks like this:
-make: partName
-Design Patterns: Elements of Reusable Object-Oriented Software
-104
-^ (partCatalog at: partName) new
+4. Using multiple inheritance. You can use multiple inheritance in C++ to 
+combine an interface with its implementation [Mar91]. For example, a class 
+can inherit publicly from Abstraction and privately from a 
+ConcreteImplementor. But because this approach relies on static 
+inheritance, it binds an implementation permanently to its interface. 
+Therefore you can't implement a true Bridge with multiple inheritance—at 
+least not in C++.
 
-3. Defining extensible factories. 
-AbstractFactory usually defines a different operation for each kind of 
-product it can produce. The kinds of products are encoded in the operation 
-signatures. Adding a new kind of product requires changing the AbstractFactory
-interface and all the classes that depend on it.
-A more flexible but less safe design is to add a parameter to operations
-that create objects. This parameter specifies the kind of object to be
-created. It could be a class identifier, an integer, a string, or anything
-else that identifies the kind of product. In fact with this approach,
-AbstractFactory only needs a single "Make" operation with a parameter
-indicating the kind of object to create. This is the technique used in the
-Prototype- and the class-based abstract factories discussed earlier.
-This variation is easier to use in a dynamically typed language like
-Smalltalk than in a statically typed language like C++. You can use it in
-C++ only when all objects have the same abstract base class or when the
-product objects can be safely coerced to the correct type by the client
-that requested them. The implementation section of Factory Method (121)
-shows how to implement such parameterized operations in C++.
-But even when no coercion is needed, an inherent problem remains: All
-products are returned to the client with the same abstract interface as
-given by the return type. The client will not be able to differentiate or
-make safe assumptions about the class of a product. If clients need to
-perform subclass-specific operations, they won't be accessible through the
-abstract interface. Although the client could perform a downcast (e.g.,
-with dynamic_cast in C++), that's not always feasible or safe, because the
-downcast can fail. This is the classic trade-off for a highly flexible and
-extensible interface.
 
 KNOWN USES
 
-InterViews uses the "Kit" suffix to denote AbstractFactory classes. It
-defines WidgetKit and DialogKit abstract factories for generating
-look-and-feel-specific user interface objects. InterViews also includes a
-LayoutKit that generates different composition objects depending on the layout
-desired. For example, a layout that is conceptually horizontal may require
-different composition objects depending on the document's orientation (portrait
-or landscape).
-ET++ [WGM88] uses the Abstract Factory pattern to achieve portability across
-different window systems (X Windows and SunView, for example). The WindowSystem
-abstract base class defines the interface for creating objects that represent
-window system resources (MakeWindow, MakeFont, MakeColor, for example). Concrete
-subclasses implement the interfaces for a specific window system. At run-time,
-ET++ creates an instance of a concrete WindowSystem subclass that creates concrete
-system resource objects.
+The Window example above comes from ET++ [WGM88]. In ET++, WindowImp is called 
+"WindowPort" and has subclasses such as XWindowPort and SunWindowPort. The Window 
+object creates its corresponding Implementor object by requesting it from an 
+abstract factory called "WindowSystem." WindowSystem provides an interface for 
+creating platform-specific objects such as fonts, cursors, bitmaps, and so forth. 
+The ET++ Window/WindowPort design extends the Bridge pattern in that the WindowPort 
+also keeps a reference back to the Window. The WindowPort implementor class uses
+this reference to notify Window about WindowPort-specific events: the arrival 
+of input events, window resizes, etc. 
+Both Coplien [Cop92] and Stroustrup [Str91] mention Handle classes and give some 
+examples. Their examples emphasize memory management issues like sharing string 
+representations and support for variable-sized objects. Our focus is more on 
+supporting independent extension of both an abstraction and its implementation. 
+libg++ [Lea88] defines classes that implement common data structures, such as 
+Set, LinkedSet, HashSet, LinkedList, and HashTable. Set is an abstract class that 
+defines a set abstraction, while LinkedList and HashTable are concrete 
+implementors for a linked list and a hash table, respectively. LinkedSet and 
+HashSet are Set implementors that bridge between Set and their concrete 
+counterparts LinkedList and HashTable. This is an example of a degenerate bridge, 
+because there's no abstract Implementor class. 
+NeXT's AppKit [Add94] uses the Bridge pattern in the implementation and display 
+of graphical images. An image can be represented in several different ways. The 
+optimal display of an image depends on the properties of a display device, 
+specifically its color capabilities and its resolution. Without help from AppKit, 
+developers would have to determine which implementation to use under various 
+circumstances in every application. 
+To relieve developers of this responsibility, AppKit provides an 
+NXImage/NXImageRep bridge. NXImage defines the interface for handling images. 
+The implementation of images is defined in a separate NXImageRep class hierarchy 
+having subclasses such as NXEPSImageRep, NXCachedImageRep, and NXBitMapImageRep. 
+NXImage maintains a reference to one or more NXImageRep objects. If there is more 
+than one image implementation, then NXImage selects the most appropriate one for 
+the current display device. NXImage is even capable of converting one 
+implementation to another if necessary. The interesting aspect of this Bridge 
+variant is that NXImage can store more than one NXImageRep implementation at a 
+time.
 
 RELATED PATTERNS
 
-AbstractFactory classes are often implemented with factory methods, but they can 
-also be implemented using Prototype. 
-A concrete factory is often a singleton.
+An Abstract Factory can create and configure a particular Bridge. 
+
+The Adapter pattern is geared toward making unrelated classes work together. 
+It is usually applied to systems after they're designed. Bridge, on the other 
+hand, is used up-front in a design to let abstractions and implementations vary 
+independently.

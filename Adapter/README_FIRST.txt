@@ -1,45 +1,64 @@
-﻿ABSTRACT FACTORY - CREATIONAL DESIGN PATTERN
+﻿ADAPTER - STRUCTURAL DESIGN PATTERN
 
 INTENT
 
-Provide an interface for creating families of related or dependent objects without
-specifying their concrete classes.
+Convert the interface of a class into another interface clients expect. Adapter 
+lets classes work together that couldn't otherwise because of incompatible 
+interfaces.
 
 
 ALSO KNOWN AS
-Kit
+Wrapper
 
 MOTIVATION
 
-Consider a user interface toolkit that supports multiple look-and-feel standards,
-such as Motif and Presentation Manager. Different look-and-feels define different
-appearances and behaviors for user interface "widgets" like scroll bars, windows,
-and buttons. To be portable across look-and-feel standards, an application should
-not hard-code its widgets for a particular look and feel. Instantiating
-look-and-feel-specific classes of widgets throughout the application makes it
-hard to change the look and feel later.
-We can solve this problem by defining an abstract WidgetFactory class that declares
-an interface for creating each basic kind of widget. There's also an abstract
-class for each kind of widget, and concrete subclasses implement widgets for
-specific look-and-feel standards. WidgetFactory's interface has an operation that
-returns a new widget object for each abstract widget class. Clients call these
-operations to obtain widget instances, but clients aren't aware of the concrete
-classes they're using. Thus clients stay independent of the prevailing look and
-feel.
+Sometimes a toolkit class that's designed for reuse isn't reusable only because 
+its interface doesn't match the domain-specific interface an application requires. 
+Consider for example a drawing editor that lets users draw and arrange graphical 
+elements (lines, polygons, text, etc.) into pictures and diagrams. The drawing 
+editor's key abstraction is the graphical object, which has an editable shape 
+and can draw itself. The interface for graphical objects is defined by an abstract 
+class called Shape. The editor defines a subclass of Shape for each kind of graphical 
+object: a LineShape class for lines, a PolygonShape class for polygons, and so 
+forth. 
+Classes for elementary geometric shapes like LineShape and PolygonShape are rather 
+easy to implement, because their drawing and editing capabilities are inherently 
+limited. But a TextShape subclass that can display and edit text is considerably 
+more difficult to implement, since even basic text editing involves complicated 
+screen update and buffer management. Meanwhile, an off-the-shelf user interface 
+toolkit might already provide a sophisticated TextView class for displaying and 
+editing text. Ideally we'd like to reuse TextView to implement TextShape, but 
+the toolkit wasn't designed with Shape classes in mind. So we can't use TextView 
+and Shape objects interchangeably. 
+How can existing and unrelated classes like TextView work in an application that 
+expects classes with a different and incompatible interface? We could change the 
+TextView class so that it conforms to the Shape interface, but that isn't an option 
+unless we have the toolkit's source code. Even if we did, it wouldn't make sense 
+to change TextView; the toolkit shouldn't have to adopt domain-specific interfaces 
+just to make one application work.
 
-There is a concrete subclass of WidgetFactory for each look-and-feel standard.
-Each subclass implements the operations to create the appropriate widget for the
-look and feel. For example, the CreateScrollBar operation on the
-MotifWidgetFactory instantiates and returns a Motif scroll bar, while the
-corresponding operation on the PMWidgetFactory returns a scroll bar for
-Presentation Manager. Clients create widgets solely through the WidgetFactory
-interface and have no knowledge of the classes that implement widgets for a
-particular look and feel. In other words, clients only have to commit to an interface
-defined by an abstract class, not a particular concrete class.
-A WidgetFactory also enforces dependencies between the concrete widget classes.
-A Motif scroll bar should be used with a Motif button and a Motif text editor,
-and that constraint is enforced automatically as a consequence of using a
-MotifWidgetFactory.
+Instead, we could define TextShape so that it adapts the TextView interface to 
+Shape's. We can do this in one of two ways: (1) by inheriting Shape's interface 
+and TextView's implementation or (2) by composing a TextView instance within a 
+TextShape and implementing TextShape in terms of TextView's interface. These two 
+approaches correspond to the class and object versions of the Adapter pattern. 
+We call TextShape an adapter.
+
+This diagram illustrates the object adapter case. It shows how BoundingBox requests, 
+declared in class Shape, are converted to GetExtent requests defined in TextView. 
+Since TextShape adapts TextView to the Shape interface, the drawing editor can 
+reuse the otherwise incompatible TextView class. 
+Often the adapter is responsible for functionality the adapted class doesn't 
+provide. The diagram shows how an adapter can fulfill such responsibilities. The 
+user should be able to "drag" every Shape object to a new location interactively, 
+but TextView isn't designed to do that. TextShape can add this missing 
+functionality by implementing Shape's CreateManipulator operation, which returns 
+an instance of the appropriate Manipulator subclass. 
+Manipulator is an abstract class for objects that know how to animate a Shape 
+in response to user input, like dragging the shape to a new location. There are 
+subclasses of Manipulator for different shapes; TextManipulator, for example, 
+is the corresponding subclass for TextShape. By returning a TextManipulator 
+instance, TextShape adds the functionality that TextView lacks but Shape requires. 
 
 APPLICABILITY
 

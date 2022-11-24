@@ -1,221 +1,185 @@
-﻿ABSTRACT FACTORY - CREATIONAL DESIGN PATTERN
+﻿STRATEGY - BEHAVIORAL DESIGN PATTERN
 
 INTENT
 
-Provide an interface for creating families of related or dependent objects without
-specifying their concrete classes.
-
+Define a family of algorithms, encapsulate each one, and make theminterchangeable. 
+Strategy lets the algorithm vary independently fromclients that use it. 
 
 ALSO KNOWN AS
-Kit
+POLICY
 
 MOTIVATION
+Many algorithms exist for breaking a stream of text into lines.Hard-wiring all 
+such algorithms into the classes that require themisn't desirable for several 
+reasons: 
+· Clients that need linebreaking get more complex if they includethe 
+linebreaking code. That makes clients bigger and harder tomaintain, 
+especially if they support multiple linebreaking algorithms. 
+· Different algorithms will be appropriate at different times. We don'twant 
+to support multiple linebreaking algorithms if we don't use themall. 
+· It's difficult to add new algorithms and vary existing ones whenlinebreaking 
+is an integral part of a client. 
+We can avoid these problems by defining classes that encapsulatedifferent 
+linebreaking algorithms. An algorithm that's encapsulated in this way is called 
+a strategy. 
 
-Consider a user interface toolkit that supports multiple look-and-feel standards,
-such as Motif and Presentation Manager. Different look-and-feels define different
-appearances and behaviors for user interface "widgets" like scroll bars, windows,
-and buttons. To be portable across look-and-feel standards, an application should
-not hard-code its widgets for a particular look and feel. Instantiating
-look-and-feel-specific classes of widgets throughout the application makes it
-hard to change the look and feel later.
-We can solve this problem by defining an abstract WidgetFactory class that declares
-an interface for creating each basic kind of widget. There's also an abstract
-class for each kind of widget, and concrete subclasses implement widgets for
-specific look-and-feel standards. WidgetFactory's interface has an operation that
-returns a new widget object for each abstract widget class. Clients call these
-operations to obtain widget instances, but clients aren't aware of the concrete
-classes they're using. Thus clients stay independent of the prevailing look and
-feel.
-
-There is a concrete subclass of WidgetFactory for each look-and-feel standard.
-Each subclass implements the operations to create the appropriate widget for the
-look and feel. For example, the CreateScrollBar operation on the
-MotifWidgetFactory instantiates and returns a Motif scroll bar, while the
-corresponding operation on the PMWidgetFactory returns a scroll bar for
-Presentation Manager. Clients create widgets solely through the WidgetFactory
-interface and have no knowledge of the classes that implement widgets for a
-particular look and feel. In other words, clients only have to commit to an interface
-defined by an abstract class, not a particular concrete class.
-A WidgetFactory also enforces dependencies between the concrete widget classes.
-A Motif scroll bar should be used with a Motif button and a Motif text editor,
-and that constraint is enforced automatically as a consequence of using a
-MotifWidgetFactory.
+Suppose a Composition class is responsible for maintaining andupdating the 
+linebreaks of text displayed in a text viewer.Linebreaking strategies aren't 
+Design Patterns: Elements of Reusable Object-Oriented Software 
+350 
+implemented by the class Composition.Instead, they are implemented separately 
+by subclasses of the abstractCompositor class. Compositor subclasses implement 
+different strategies: 
+· SimpleCompositorimplements a simple strategy that determines linebreaks 
+one at atime. 
+· TeXCompositorimplements the TeX algorithm for finding linebreaks. This 
+strategytries to optimize linebreaks globally, that is, one paragraph at 
+atime. 
+· ArrayCompositorimplements a strategy that selects breaks so that each row 
+has a fixednumber of items. It's useful for breaking a collection of icons 
+intorows, for example. 
+A Composition maintains a reference to a Compositor object. Whenever aComposition 
+reformats its text, it forwards this responsibility to itsCompositor object. The 
+client of Composition specifies whichCompositor should be used by installing the 
+Compositor it desires intothe Composition. 
 
 APPLICABILITY
 
-Use the Abstract Factory pattern when
-· a system should be independent of how its products are created, composed,
-and represented.
-· a system should be configured with one of multiple families of products.
-· a family of related product objects is designed to be used together, and
-you need to enforce this constraint.
-· you want to provide a class library of products, and you want to reveal
-just their interfaces, not their implementations.
+Use the Strategy pattern when 
+· many related classes differ only in their behavior. Strategiesprovide a 
+way to configure a class with one of many behaviors. 
+· you need different variants of an algorithm. For example, you might 
+definealgorithms reflecting different space/time trade-offs.Strategies 
+can be used when these variants are implemented as a classhierarchy of 
+algorithms [HO87]. 
+· an algorithm uses data that clients shouldn't know about. Use theStrategy 
+pattern to avoid exposing complex, algorithm-specific datastructures. 
+· a class defines many behaviors, and these appear as multipleconditional 
+statements in its operations. Instead of manyconditionals, move related 
+conditional branches into their ownStrategy class.
 
 STRUCTURE
 
-PARTICPANTS
+PARTICIPANTS
 
-· AbstractFactory (WidgetFactory)
-o declares an interface for operations that create abstract product objects.
+· Strategy (Compositor) 
+o declares an interface common to all supported algorithms. Context 
+uses this interface to call the algorithm defined by a 
 
-· ConcreteFactory (MotifWidgetFactory, PMWidgetFactory)
-o implements the operations to create concrete product objects.
+ConcreteStrategy. 
+· ConcreteStrategy (SimpleCompositor, TeXCompositor,ArrayCompositor) 
+o implements the algorithm using the Strategy interface. 
 
-· AbstractProduct (Window, ScrollBar)
-o declares an interface for a type of product object.
+· Context (Composition) 
+o is configured with a ConcreteStrategy object. 
+o maintains a reference to a Strategy object. 
+o may define an interface that lets Strategy access its data.
 
-· ConcreteProduct (MotifWindow, MotifScrollBar)
-o defines a product object to be created by the corresponding concrete factory.
-o implements the AbstractProduct interface.
-
-· Client
-o uses only interfaces declared by AbstractFactory and AbstractProduct classes.
 
 COLLABORATIONS
 
-· Normally a single instance of a ConcreteFactory class is created at run-time.
-This concrete factory creates product objects having a particular
-implementation. To create different product objects, clients should use
-a different concrete factory.
-· AbstractFactory defers creation of product objects to its ConcreteFactory
-subclass.
-Design Patterns: Elements of Reusable Object-Oriented Software
-102
+· Strategy and Context interact to implement the chosen algorithm. Acontext 
+may pass all data required by the algorithm to the strategywhen the algorithm 
+is called. Alternatively, the context can passitself as an argument to 
+Strategy operations. That lets the strategycall back on the context as 
+required. 
+
+· A context forwards requests from its clients to its strategy. Clientsusually 
+create and pass a ConcreteStrategy object to the context;thereafter, 
+clients interact with the context exclusively. There isoften a family of 
+ConcreteStrategy classes for a client to choosefrom.
 
 CONSEQUENCES
 
-The Abstract Factory pattern has the following benefits and liabilities:
+The Strategy pattern has the following benefits and drawbacks:
 
-1. It isolates concrete classes. The Abstract Factory pattern helps you control
-the classes of objects that an application creates. Because a factory
-encapsulates the responsibility and the process of creating product objects,
-it isolates clients from implementation classes. Clients manipulate
-instances through their abstract interfaces. Product class names are
-isolated in the implementation of the concrete factory; they do not appear
-in client code.
+1. Families of related algorithms.Hierarchies of Strategy classes define a 
+family of algorithms orbehaviors for contexts to reuse. Inheritance canhelp 
+factor out common functionality of the algorithms. 
 
-2. It makes exchanging product families easy. The class of a concrete factory
-appears only once in an application—that is, where it's instantiated. This
-makes it easy to change the concrete factory an application uses. It can
-use different product configurations simply by changing the concrete
-factory. Because an abstract factory creates a complete family of products,
-the whole product family changes at once. In our user interface example,
-we can switch from Motif widgets to Presentation Manager widgets simply
-by switching the corresponding factory objects and recreating the
-interface.
+2. An alternative to subclassing.Inheritance offers another way to support 
+a variety of algorithms orbehaviors. You can subclass a Context class 
+directly to give itdifferent behaviors. But this hard-wires the behavior 
+into Context.It mixes the algorithm implementation with Context's, making 
+Contextharder to understand, maintain, and extend. And you can't vary 
+thealgorithm dynamically. You wind up with many related classes whoseonly 
+difference is the algorithm or behavior they employ.Encapsulating the 
+algorithm in separate Strategy classes lets you varythe algorithm 
+independently of its context, making it easier toswitch, understand, and 
+extend. 
 
-3. It promotes consistency among products. When product objects in a family
-are designed to work together, it's important that an application use
-objects from only one family at a time. AbstractFactory makes this easy
-to enforce.
+3. Strategies eliminate conditional statements.The Strategy pattern offers 
+an alternative to conditional statements forselecting desired behavior. 
+When different behaviors are lumped into oneclass, it's hard to avoid using 
+conditional statements to select theright behavior. Encapsulating the 
+behavior in separate Strategy classeseliminates these conditional 
+statements. 
 
-4. Supporting new kinds of products is difficult. Extending abstract factories
-to produce new kinds of Products isn't easy. That's because the
-AbstractFactory interface fixes the set of products that can be created.
-Supporting new kinds of products requires extending the factory interface,
-which involves changing the AbstractFactory class and all of its subclasses.
-We discuss one solution to this problem in the Implementation section.
+4. A choice of implementations.Strategies can provide different 
+implementations of the samebehavior. The client can choose among strategies 
+with differenttime and space trade-offs. 
+
+5. Clients must be aware of different Strategies.The pattern has a potential 
+drawback in that a client must understandhow Strategies differ before it 
+can select the appropriate one.Clients might be exposed to implementation 
+issues. Therefore youshould use the Strategy pattern only when the variation 
+in behavior isrelevant to clients. 
+
+6. Communication overhead between Strategy and Context.The Strategy interface 
+is shared by all ConcreteStrategy classeswhether the algorithms they 
+implement are trivial or complex. Henceit's likely that some 
+ConcreteStrategies won't use all the informationpassed to them through this 
+interface; simple ConcreteStrategies mayuse none of it! That means there 
+will be times when the contextcreates and initializes parameters that never 
+get used. If this is anissue, then you'll need tighter coupling between 
+Strategy and Context. 
+
+7. Increased number of objects.Strategies increase the number of objects in 
+an application. Sometimesyou can reduce this overhead by implementing 
+strategies as statelessobjects that contexts can share. Any residual state 
+is maintained by thecontext, which passes it in each request to the Strategy 
+object. Sharedstrategies should not maintain state across invocations. The 
+Flyweight (218) pattern describes this approach in moredetail
 
 IMPLEMENTATION
 
-Here are some useful techniques for implementing the Abstract Factory pattern.
+Consider the following implementation issues: 
 
-1. Factories as singletons. 
-An application typically needs only one instance of a ConcreteFactory 
-per product family. So it's usually best implemented as a Singleton.
+1. Defining the Strategy and Context interfaces.The Strategy and Context 
+interfaces must give a ConcreteStrategyefficient access to any data it needs 
+from a context, and vice versa. 
+One approach is to have Context pass data in parameters to 
+Strategyoperations—in other words, take the data to the strategy. This 
+keepsStrategy and Context decoupled. On the other hand, Context mightpass 
+data the Strategy doesn't need. 
+Another technique has a context pass itself as an argument, andthe strategy 
+requests data from the context explicitly.Alternatively, the strategy can 
+store a reference to its context,eliminating the need to pass anything at 
+all. Either way, thestrategy can request exactly what it needs. But now
+Context mustdefine a more elaborate interface to its data, which couples 
+Strategyand Context more closely. 
+The needs of the particular algorithm and its data requirements 
+willdetermine the best technique. 
 
-2. Creating the products. 
-AbstractFactory only declares an interface for creating products. 
-It's up to ConcreteProduct subclasses to actually create them. 
-The most common way to do this is to define a factory method for each product. 
-A concrete factory will specify its products by overriding the factory method
-for each. While this implementation is simple, it requires a new concrete 
-factory subclass for each product family, even if the product families differ
-only slightly.
-If many product families are possible, the concrete factory can be
-implemented using the Prototype pattern. The concrete factory is
-initialized with a prototypical instance of each product in the family,
-and it creates a new product by cloning its prototype. The Prototype-based
-approach eliminates the need for a new concrete factory class for each new
-product family.
-Here's a way to implement a Prototype-based factory in Smalltalk. The
-concrete factory stores the prototypes to be cloned in a dictionary called
-partCatalog. The method make: retrieves the prototype and clones it:
-make: partName
-^ (partCatalog at: partName) copy
-The concrete factory has a method for adding parts to the catalog.
-addPart: partTemplate named: partName
-partCatalog at: partName put: partTemplate
-Prototypes are added to the factory by identifying them with a symbol:
-aFactory addPart: aPrototype named: #ACMEWidget
-A variation on the Prototype-based approach is possible in languages that
-treat classes as first-class objects (Smalltalk and Objective C, for
-example). You can think of a class in these languages as a degenerate factory
-that creates only one kind of product. You can store classes inside a
-concrete factory that create the various concrete products in variables,
-much like prototypes. These classes create new instances on behalf of the
-concrete factory. You define a new factory by initializing an instance of
-a concrete factory with classes of products rather than by subclassing.
-This approach takes advantage of language characteristics, whereas the pure
-Prototype-based approach is language-independent.
-Like the Prototype-based factory in Smalltalk just discussed, the
-class-based version will have a single instance variable partCatalog, which
-is a dictionary whose key is the name of the part. Instead of storing
-prototypes to be cloned, partCatalog stores the classes of the products.
-The method make: now looks like this:
-make: partName
-Design Patterns: Elements of Reusable Object-Oriented Software
-104
-^ (partCatalog at: partName) new
+2. Strategies as template parameters.In C++ templates can be used to configure 
+a class with a strategy.This technique is only applicable if (1) the Strategy 
+can be selectedat compile-time, and (2) it does not have to be changed at 
+run-time.In this case, the class to be configured (e.g., Context) isdefined 
+as a template class that has a Strategy class as a parameter.
+The class is then configured with a Strategy class when it's 
+instantiatedWith templates, there's no need to define an abstract class that defines 
+the interface to the Strategy. Using Strategy as atemplate parameter also 
+lets you bind a Strategy to itsContext statically, which can increase 
+efficiency. 
 
-3. Defining extensible factories. 
-AbstractFactory usually defines a different operation for each kind of 
-product it can produce. The kinds of products are encoded in the operation 
-signatures. Adding a new kind of product requires changing the AbstractFactory
-interface and all the classes that depend on it.
-A more flexible but less safe design is to add a parameter to operations
-that create objects. This parameter specifies the kind of object to be
-created. It could be a class identifier, an integer, a string, or anything
-else that identifies the kind of product. In fact with this approach,
-AbstractFactory only needs a single "Make" operation with a parameter
-indicating the kind of object to create. This is the technique used in the
-Prototype- and the class-based abstract factories discussed earlier.
-This variation is easier to use in a dynamically typed language like
-Smalltalk than in a statically typed language like C++. You can use it in
-C++ only when all objects have the same abstract base class or when the
-product objects can be safely coerced to the correct type by the client
-that requested them. The implementation section of Factory Method (121)
-shows how to implement such parameterized operations in C++.
-But even when no coercion is needed, an inherent problem remains: All
-products are returned to the client with the same abstract interface as
-given by the return type. The client will not be able to differentiate or
-make safe assumptions about the class of a product. If clients need to
-perform subclass-specific operations, they won't be accessible through the
-abstract interface. Although the client could perform a downcast (e.g.,
-with dynamic_cast in C++), that's not always feasible or safe, because the
-downcast can fail. This is the classic trade-off for a highly flexible and
-extensible interface.
-
-KNOWN USES
-
-InterViews uses the "Kit" suffix to denote AbstractFactory classes. It
-defines WidgetKit and DialogKit abstract factories for generating
-look-and-feel-specific user interface objects. InterViews also includes a
-LayoutKit that generates different composition objects depending on the layout
-desired. For example, a layout that is conceptually horizontal may require
-different composition objects depending on the document's orientation (portrait
-or landscape).
-ET++ [WGM88] uses the Abstract Factory pattern to achieve portability across
-different window systems (X Windows and SunView, for example). The WindowSystem
-abstract base class defines the interface for creating objects that represent
-window system resources (MakeWindow, MakeFont, MakeColor, for example). Concrete
-subclasses implement the interfaces for a specific window system. At run-time,
-ET++ creates an instance of a concrete WindowSystem subclass that creates concrete
-system resource objects.
+3. Making Strategy objects optional.The Context class may be simplified if 
+it's meaningful not tohave a Strategy object. Context checks to see if it 
+has a Strategyobject before accessing it. If there is one, then Context 
+uses itnormally. If there isn't a strategy, then Context carries out 
+defaultbehavior. The benefit of this approach is that clients don't have 
+todeal with Strategy objects at all unless they don't like thedefault 
+behavior. 
 
 RELATED PATTERNS
 
-AbstractFactory classes are often implemented with factory methods, but they can 
-also be implemented using Prototype. 
-A concrete factory is often a singleton.
+Flyweight: Strategy objects often make good flyweights.
